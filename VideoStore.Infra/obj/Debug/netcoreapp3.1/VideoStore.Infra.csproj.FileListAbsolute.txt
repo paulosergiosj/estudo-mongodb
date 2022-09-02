@@ -1,0 +1,12 @@
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.csproj.AssemblyReference.cache
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.AssemblyInfoInputs.cache
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.AssemblyInfo.cs
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.csproj.CoreCompileInputs.cache
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\bin\Debug\netcoreapp3.1\VideoStore.Infra.deps.json
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\bin\Debug\netcoreapp3.1\VideoStore.Infra.dll
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\bin\Debug\netcoreapp3.1\VideoStore.Infra.pdb
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\bin\Debug\netcoreapp3.1\VideoStore.Domain.dll
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\bin\Debug\netcoreapp3.1\VideoStore.Domain.pdb
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.dll
+C:\Users\paulo.dasilva\Documents\Projetos\VideoStore\VideoStore.Infra\obj\Debug\netcoreapp3.1\VideoStore.Infra.pdb
