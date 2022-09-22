@@ -23,14 +23,6 @@ namespace VideoStore.Api.Controllers
             return new JsonResult(await _categoryService.CreateCategory(category));
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Get(string id)
-        //{
-        //    var category = await _categoryService.GetCategoryById(ObjectId.Parse(id));
-
-        //    return new JsonResult(category);
-        //}
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

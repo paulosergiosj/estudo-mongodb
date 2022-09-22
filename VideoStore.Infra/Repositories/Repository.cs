@@ -2,12 +2,12 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VideoStore.Domain.Base;
 using VideoStore.Domain.Models;
 using VideoStore.Infra.Constants;
-using System.Linq;
 
 namespace VideoStore.Infra.Repositories
 {
@@ -45,6 +45,9 @@ namespace VideoStore.Infra.Repositories
 
             return entity;
         }
+
+        public async Task<bool> ExistAsync(ObjectId id) => await GetByIdAsync(id) != null;
+
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {

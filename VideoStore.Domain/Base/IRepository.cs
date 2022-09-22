@@ -7,11 +7,12 @@ using VideoStore.Domain.Models;
 
 namespace VideoStore.Domain.Base
 {
-    public interface IRepository<TEntity>  where TEntity : class, IEntity<ObjectId>
+    public interface IRepository<TEntity> where TEntity : class, IEntity<ObjectId>
     {
         Task<ObjectId> InsertAsync(TEntity entity);
         Task<bool> RemoveAsync(ObjectId id);
         Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<bool> ExistAsync(ObjectId id);
         Task<TEntity> GetByIdAsync(ObjectId id);
         Task<bool> UpdateAsync(TEntity entity);
         Task<bool> RemoveLogicAsync(ObjectId id);

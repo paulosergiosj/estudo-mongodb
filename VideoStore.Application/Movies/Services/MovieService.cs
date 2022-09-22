@@ -1,7 +1,11 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using VideoStore.Application.Categories.Services;
 using VideoStore.Application.Movies.Interfaces;
 using VideoStore.Domain.Movies.Entities;
 using VideoStore.Domain.Movies.Repositories;
@@ -10,21 +14,30 @@ namespace VideoStore.Application.Movies.Services
 {
     public class MovieService : IMovieService
     {
-        private readonly IMovieRepository _movieRepository;
+        public const string ERROR_INVALID_CATEGORY = "Category(s) invalid";
+        public const string ERROR_MOVIE_NON_CREATED = "Movie could not be created";
+        public const string ERROR_MOVIE_COULD_NOT_BE_UPDATED = "Movie could not be updated";
 
-        public MovieService(IMovieRepository movieRepository)
+        private readonly IMovieRepository _movieRepository;
+        private readonly ICategoryValidator _categoryValidator;
+
+        public MovieService(IMovieRepository movieRepository, ICategoryValidator categoryValidator)
         {
             _movieRepository = movieRepository;
+            _categoryValidator = categoryValidator;
         }
 
-        public async Task<HttpStatusCode> CreateMovieAsync(Movie movie)
+        public async Task<ObjectResult> CreateMovieAsync(Movie movie)
         {
+            if (!await _categoryValidator.IsCategoriesIdvalid(movie.CategoriesId.Select(x => (ObjectId)x.Id)))
+                return GetBadRequestObjectResult(ERROR_INVALID_CATEGORY);
+
             var id = await _movieRepository.InsertAsync(movie);
 
             if (id == null)
-                return HttpStatusCode.InternalServerError;
+                return GetBadRequestObjectResult(ERROR_MOVIE_NON_CREATED);
 
-            return HttpStatusCode.Created;
+            return new ObjectResult(HttpStatusCode.Created);
         }
 
         public async Task<HttpStatusCode> DeleteMovieAsync(ObjectId id)
@@ -39,26 +52,34 @@ namespace VideoStore.Application.Movies.Services
 
         public async Task<IEnumerable<Movie>> GetAllMoviesAsync()
         {
-            var movie = await _movieRepository.GetAllAsync();
+            var movies = await _movieRepository.GetAllAsync();
 
-            return movie;
+            return movies;
         }
 
-        public async Task<Movie> GetMovieById(ObjectId id)
+        public async Task<ObjectResult> GetMovieById(ObjectId id)
         {
             var category = await _movieRepository.GetByIdAsync(id);
 
-            return category;
+            return new ObjectResult(category);
         }
 
-        public async Task<HttpStatusCode> UpdateMovieAsync(Movie movie)
+        public async Task<ObjectResult> UpdateMovieAsync(Movie movie)
         {
+            if (!await _categoryValidator.IsCategoriesIdvalid(movie.CategoriesId.Select(x => (ObjectId)x.Id)))
+                return GetBadRequestObjectResult(ERROR_INVALID_CATEGORY);
+
             var success = await _movieRepository.UpdateAsync(movie);
 
             if (!success)
-                return HttpStatusCode.InternalServerError;
+                return GetBadRequestObjectResult(ERROR_MOVIE_COULD_NOT_BE_UPDATED);
 
-            return HttpStatusCode.OK;
+            return new ObjectResult(HttpStatusCode.Created);
+        }
+
+        private BadRequestObjectResult GetBadRequestObjectResult(string message)
+        {
+            return new BadRequestObjectResult(new Exception(message));
         }
     }
 }

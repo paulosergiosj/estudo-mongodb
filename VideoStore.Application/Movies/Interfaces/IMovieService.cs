@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -8,10 +9,10 @@ namespace VideoStore.Application.Movies.Interfaces
 {
     public interface IMovieService
     {
-        Task<HttpStatusCode> CreateMovieAsync(Movie movie);
+        Task<ObjectResult> CreateMovieAsync(Movie movie);
         Task<HttpStatusCode> DeleteMovieAsync(ObjectId id);
         Task<IEnumerable<Movie>> GetAllMoviesAsync();
-        Task<Movie> GetMovieById(ObjectId id);
-        Task<HttpStatusCode> UpdateMovieAsync(Movie movie);
+        Task<ObjectResult> GetMovieById(ObjectId id);
+        Task<ObjectResult> UpdateMovieAsync(Movie movie);
     }
 }
