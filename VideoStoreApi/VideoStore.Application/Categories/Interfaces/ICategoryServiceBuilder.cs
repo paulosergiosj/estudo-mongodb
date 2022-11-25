@@ -6,6 +6,6 @@ namespace VideoStore.Application.Categories.Interfaces
 {
     public interface ICategoryServiceBuilder : IServiceBuilderBase<Category>
     {
-        ICategoryServiceBuilder FilterById(ObjectId id);
+
     }
 }

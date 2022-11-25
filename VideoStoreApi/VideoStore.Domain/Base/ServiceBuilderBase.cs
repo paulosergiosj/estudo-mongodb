@@ -17,6 +17,13 @@ namespace VideoStore.Domain.Base
             _filters = new List<Expression<Func<TEntity, bool>>>();
         }
 
+        public IServiceBuilderBase<TEntity> FilterById(ObjectId id)
+        {
+            AddFilter(x => x.Id == id);
+
+            return this;
+        }
+
         public Expression<Func<TEntity, bool>> Build()
         {
             var filter = _filters.Any() ? _filters.ConcatWithAnd() : EmptyExpression();

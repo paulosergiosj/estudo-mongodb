@@ -7,12 +7,6 @@ namespace VideoStore.Application.Categories.Services
 {
     public class CategoryServiceBuilder : ServiceBuilderBase<Category>, ICategoryServiceBuilder
     {
-        public ICategoryServiceBuilder FilterById(ObjectId id)
-        {
-            AddFilter(x => x.Id == id);
-
-            return this;
-        }
 
     }
 }

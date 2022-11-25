@@ -25,6 +25,7 @@ namespace VideoStore.Application
             serviceCollection.AddTransient<IValidator<MovieCommand>, MovieCommandValidator>();
             serviceCollection.AddTransient<IValidator<CategoryCommand>, CategoryCommandValidator>();
             serviceCollection.AddTransient<ICategoryServiceBuilder, CategoryServiceBuilder>();
+            serviceCollection.AddTransient<IMovieServiceBuilder, MovieServiceBuilder>();
 
             return serviceCollection;
         }

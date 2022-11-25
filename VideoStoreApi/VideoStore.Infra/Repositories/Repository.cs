@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VideoStore.Domain.Base;
 using VideoStore.Domain.Models;
+using VideoStore.Infra.CollectionDefinitions;
 using VideoStore.Infra.Constants;
 
 namespace VideoStore.Infra.Repositories
@@ -15,11 +16,11 @@ namespace VideoStore.Infra.Repositories
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity<ObjectId>
     {
         private readonly IMongoCollection<TEntity> _collection;
-
-        public Repository(IMongoClient client)
+         
+        public Repository(IMongoClient client, ICollectionDefinitions<TEntity> collectionDefinitions)
         {
             var dataBase = client.GetDatabase(ConnectionStringsConstants.DATABASE);
-            _collection = dataBase.GetCollection<TEntity>(typeof(TEntity).Name);
+            _collection = collectionDefinitions.GetCollection(dataBase); //dataBase.GetCollection<TEntity>(typeof(TEntity).Name);
         }
 
         public async Task InsertAsync(TEntity entity) => await _collection.InsertOneAsync(entity);
@@ -31,7 +32,7 @@ namespace VideoStore.Infra.Repositories
                  .Where(where)
                  .Select(selector);
 
-            return query;
+            return query.AsEnumerable();
         }
 
         public async Task<TEntity> GetByIdAsync(ObjectId id)

@@ -10,15 +10,14 @@ using VideoStore.Domain.Movies.Repositories;
 
 namespace VideoStore.Application.Movies.Validators
 {
-    public class MovieCommandValidator : IValidator<MovieCommand>
+    public class MovieCommandValidator : Validator<MovieCommand>, IValidator<MovieCommand>
     {
         private const decimal MIN_RATE = 0;
         private const decimal MAX_RATE = 10;
-        private const string RATE_OUT_OF_RANGE = @"The field {0} must be greater than {1}.";
-        private const string CATEGORYID_INVALID = @"Category {0} invalid";
-        private const string MOVIEID_INVALID = @"Movie {0} invalid";
+        private const string RATE_OUT_OF_RANGE = @"The Rate must be between {0} and {1}.";
+        private const string CATEGORYID_INVALID = @"There are invalid Categories!";
+        private const string MOVIEID_INVALID = @"Movie invalid!";
 
-        private string Element;
         private readonly IMovieRepository _movieRepository;
         private readonly ICategoryRepository _categoryRepository;
 
@@ -26,52 +25,39 @@ namespace VideoStore.Application.Movies.Validators
         {
             _movieRepository = movieRepository;
             _categoryRepository = categoryRepository;
-        }
 
-        public async Task<(bool, string)> IsValid(MovieCommand command)
-        {
-            if (decimal.Compare(command.Rate, MIN_RATE) < 0 || decimal.Compare(command.Rate, MAX_RATE) > 0)
-            {
-                return (false, String.Format(RATE_OUT_OF_RANGE, MIN_RATE, MAX_RATE));
-            }
-
-            if (!await IsCategoriesIdValid(command.Categories))
-            {
-                return (false, String.Format(CATEGORYID_INVALID, Element));
-            }
-
-            if (command.Operation.Equals(Operation.Update) && !await IsMovieIdValid(command.Id))
-            {
-                return (false, String.Format(MOVIEID_INVALID, Element));
-            }
-
-            return (true, null);
+            Must(x =>
+                   decimal.Compare(x.Rate, MIN_RATE) >= 0
+                && decimal.Compare(x.Rate, MAX_RATE) <= 0,
+                string.Format(RATE_OUT_OF_RANGE, MIN_RATE, MAX_RATE));
+            Must(x => IsMovieIdValid(x).GetAwaiter().GetResult(), MOVIEID_INVALID);
+            Must(x => IsCategoriesIdValid(x.Categories).ConfigureAwait(false).GetAwaiter().GetResult(), CATEGORYID_INVALID);
         }
 
         private async Task<bool> IsCategoriesIdValid(IEnumerable<string> categoriesId)
         {
+            var isValid = true;
+            ObjectId id;
+
             foreach (var category in categoriesId)
             {
-                ObjectId id;
-
-
                 if (!ObjectId.TryParse(category, out id) || !await _categoryRepository.ExistAsync(id))
                 {
-                    Element = id.ToString();
-                    return false;
+                    isValid = false;
                 }
             }
 
-            return true;
+            return isValid;
         }
 
-        private async Task<bool> IsMovieIdValid(string id)
+        private async Task<bool> IsMovieIdValid(MovieCommand command)
         {
+            if (command.Operation != Operation.Update) return true;
+
             ObjectId movieId;
 
-            if (ObjectId.TryParse(id, out movieId) || !await _movieRepository.ExistAsync(movieId))
+            if (!ObjectId.TryParse(command.Id, out movieId) || !await _movieRepository.ExistAsync(movieId))
             {
-                Element = id.ToString();
                 return false;
             }
 

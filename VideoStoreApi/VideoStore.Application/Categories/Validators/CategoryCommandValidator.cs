@@ -10,7 +10,7 @@ using VideoStore.Domain.Models.Enums;
 
 namespace VideoStore.Application.Categories.Validators
 {
-    public class CategoryCommandValidator : IValidator<CategoryCommand>
+    public class CategoryCommandValidator : Validator<CategoryCommand>, IValidator<CategoryCommand>
     {
         private const string CATEGORYID_INVALID = @"Category {0} invalid";
 
@@ -21,7 +21,7 @@ namespace VideoStore.Application.Categories.Validators
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<(bool, string)> IsValid(CategoryCommand category)
+        public new async Task<(bool, string)> IsValid(CategoryCommand category)
         {
             ObjectId idParsed;
             if(category.Operation == Operation.Update && (!ObjectId.TryParse(category.Id, out idParsed) || !await _categoryRepository.ExistAsync(idParsed)))

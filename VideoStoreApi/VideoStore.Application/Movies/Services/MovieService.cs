@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using VideoStore.Application.Helpers;
@@ -14,12 +15,18 @@ namespace VideoStore.Application.Movies.Services
         private readonly IMovieRepository _movieRepository;
         private readonly IValidator<MovieCommand> _validator;
         private readonly IMovieMapper _movieMapper;
+        private readonly IMovieServiceBuilder _movieServiceBuilder;
 
-        public MovieService(IMovieRepository movieRepository, IValidator<MovieCommand> validator, IMovieMapper movieMapper)
+        public MovieService(
+            IMovieRepository movieRepository,
+            IValidator<MovieCommand> validator,
+            IMovieMapper movieMapper,
+            IMovieServiceBuilder movieServiceBuilder)
         {
             _movieRepository = movieRepository;
             _validator = validator;
             _movieMapper = movieMapper;
+            _movieServiceBuilder = movieServiceBuilder;
         }
 
         public async Task<Result> CreateMovieAsync(MovieCommand movieCommand)
@@ -45,10 +52,18 @@ namespace VideoStore.Application.Movies.Services
             return new Result(HttpStatusCode.OK);
         }
 
-        public async Task<Result> GetAllMoviesAsync() => new Result(await _movieRepository.GetAllAsync(), HttpStatusCode.OK);
+        public Result GetAllMovies() 
+        { 
+            var response = new Result(_movieRepository.GetByExpression(_movieServiceBuilder.Build(), _movieMapper.MapResponse()), HttpStatusCode.OK);
 
-        public async Task<Result> GetMovieByIdASync(ObjectId id) => new Result(await _movieRepository.GetByIdAsync(id), HttpStatusCode.OK);
+            return response;
+        }
 
+        public Result GetMovieById(ObjectId id)
+        {
+            var builder = _movieServiceBuilder.FilterById(id).Build();
+            return new Result(_movieRepository.GetByExpression(builder, _movieMapper.MapResponse()).First(), HttpStatusCode.OK);
+        }
         public async Task<Result> UpdateMovieAsync(MovieCommand movieCommand)
         {
             var (isValid, message) = await _validator.IsValid(movieCommand);

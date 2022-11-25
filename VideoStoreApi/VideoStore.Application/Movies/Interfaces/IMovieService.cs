@@ -13,8 +13,8 @@ namespace VideoStore.Application.Movies.Interfaces
     {
         Task<Result> CreateMovieAsync(MovieCommand movie);
         Task<Result> DeleteMovieAsync(ObjectId id);
-        Task<Result> GetAllMoviesAsync();
-        Task<Result> GetMovieByIdASync(ObjectId id);
+        Result GetAllMovies();
+        Result GetMovieById(ObjectId id);
         Task<Result> UpdateMovieAsync(MovieCommand movie);
     }
 }
